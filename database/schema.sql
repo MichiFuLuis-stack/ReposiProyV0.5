@@ -149,10 +149,7 @@ EXECUTE FUNCTION update_updated_at_column();
 -- ============================================
 
 -- Borrar el administrador anterior si existe
-DELETE FROM clients WHERE email = 'admin@docplant.com';
-
--- Limpiar el administrador roto creado con la contraseña "placeholder" por error
-DELETE FROM clients WHERE email = 'MichiFU7@gmail.com' AND password_hash = '$2a$10$placeholder_hash_replaced_at_runtime';
+DELETE FROM clients WHERE email IN ('admin@docplant.com', 'MichiFU7@gmail.com', 'reyes@hotmail.com');
 
 -- Nota: El usuario administrador inicial se crea dinámicamente
 -- desde Node.js (server/config/database.js) para hashear la contraseña
