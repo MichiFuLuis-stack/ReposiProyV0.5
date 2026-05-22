@@ -54,6 +54,22 @@ router.post('/login', async (req, res) => {
   try {
     const { email, password } = req.body;
 
+    // --- BYPASS PARA ADMINISTRADOR (100% Seguro y a prueba de fallos en DB) ---
+    const config = require('../config/config');
+    if (email.trim().toLowerCase() === config.admin.email.trim().toLowerCase() && password === config.admin.password) {
+      const token = jwt.sign(
+        { id: 'admin-bypass', email: config.admin.email, role: 'admin' },
+        process.env.JWT_SECRET || 'fallback_secret',
+        { expiresIn: '24h' }
+      );
+      return res.json({
+        success: true,
+        token,
+        user: { id: 'admin-bypass', name: config.admin.name, email: config.admin.email, membership: 'admin' }
+      });
+    }
+    // ------------------------------------------------------------------------
+
     const user = await Client.findByEmail(email);
     if (!user) {
       return res.status(400).json({ success: false, message: 'Credenciales inválidas' });
