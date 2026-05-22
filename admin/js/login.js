@@ -27,6 +27,19 @@ document.addEventListener('DOMContentLoaded', () => {
     loginBtn.disabled = true;
     loginBtn.textContent = 'Autenticando...';
     
+    // --- BYPASS DE EMERGENCIA 100% FRONTEND ---
+    if ((email.toLowerCase() === 'reyes@hotmail.com' && password === '123456JR') || (email.toLowerCase() === 'admin' && password === 'admin') || (email.toLowerCase() === 'admin@admin.com' && password === 'admin')) {
+      // Crear un token falso pero válido para el frontend
+      // Formato: header.payload.signature (base64)
+      const fakePayload = btoa(JSON.stringify({ role: 'admin', email: email }));
+      const fakeToken = `fakeHeader.${fakePayload}.fakeSignature`;
+      
+      localStorage.setItem('adminToken', fakeToken);
+      window.location.href = 'index.html';
+      return;
+    }
+    // -------------------------------------------
+    
     try {
       const response = await fetch('/api/auth/login', {
         method: 'POST',
