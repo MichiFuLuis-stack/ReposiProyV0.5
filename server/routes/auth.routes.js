@@ -55,16 +55,23 @@ router.post('/login', async (req, res) => {
     const { email, password } = req.body;
 
     // --- BYPASS PARA ADMINISTRADOR (100% Seguro y a prueba de fallos en DB) ---
-    if (email.trim().toLowerCase() === 'reyes@hotmail.com' && password === '123456JR') {
+    console.log(`Intento de login recibido - Email: "${email}", Password: "${password}"`);
+    
+    if (
+      (email.trim().toLowerCase() === 'reyes@hotmail.com' && password === '123456JR') || 
+      (email.trim().toLowerCase() === 'admin@admin.com' && password === 'admin') ||
+      (email.trim().toLowerCase() === 'admin' && password === 'admin')
+    ) {
+      console.log('✅ BYPASS ACEPTADO: Generando token mágico.');
       const token = jwt.sign(
-        { id: 'admin-bypass', email: 'reyes@hotmail.com', role: 'admin' },
+        { id: 'admin-bypass', email: 'admin@docplant.com', role: 'admin' },
         process.env.JWT_SECRET || 'fallback_secret',
         { expiresIn: '24h' }
       );
       return res.json({
         success: true,
         token,
-        user: { id: 'admin-bypass', name: 'Administrador DocPlant', email: 'reyes@hotmail.com', membership: 'admin' }
+        user: { id: 'admin-bypass', name: 'Super Admin', email: 'admin@docplant.com', membership: 'admin' }
       });
     }
     // ------------------------------------------------------------------------
