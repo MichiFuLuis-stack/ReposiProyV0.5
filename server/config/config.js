@@ -81,8 +81,8 @@ const config = {
 
   // === Administrador por defecto ===
   admin: {
-    email: process.env.ADMIN_EMAIL || 'admin@docplant.com',
-    password: process.env.ADMIN_PASSWORD || 'admin123',
+    email: process.env.ADMIN_EMAIL || 'MichiFU7@gmail.com',
+    password: process.env.ADMIN_PASSWORD || 'Michifu177',
     name: 'Administrador DocPlant'
   },
 

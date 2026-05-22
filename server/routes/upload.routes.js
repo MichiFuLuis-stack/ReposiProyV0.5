@@ -38,7 +38,7 @@ router.post('/template', optionalAuth, uploadLimiter, uploadTemplate.single('tem
     });
   } catch (error) {
     console.error('Upload template error:', error);
-    res.status(500).json({ success: false, message: 'Error al subir la plantilla' });
+    res.status(500).json({ success: false, message: `Error BD: ${error.message}` });
   }
 });
 
@@ -67,7 +67,7 @@ router.post('/content', optionalAuth, uploadLimiter, uploadContent.single('conte
     });
   } catch (error) {
     console.error('Upload content error:', error);
-    res.status(500).json({ success: false, message: 'Error al subir el contenido' });
+    res.status(500).json({ success: false, message: `Error BD: ${error.message}` });
   }
 });
 
