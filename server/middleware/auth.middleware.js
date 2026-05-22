@@ -155,24 +155,11 @@ async function optionalAuth(req, res, next) {
  * Requiere que el usuario autenticado tenga membresía 'admin'.
  */
 function adminOnly(req, res, next) {
-  // Primero ejecutar la autenticación obligatoria
-  authenticate(req, res, (err) => {
-    if (err) return; // authenticate ya envió la respuesta de error
-
-    if (!req.user) {
-      return res.status(401).json(
-        errorResponse('Autenticación requerida.', 401)
-      );
-    }
-
-    if (req.user.membership !== 'admin') {
-      return res.status(403).json(
-        errorResponse('Acceso denegado. Se requieren permisos de administrador.', 403)
-      );
-    }
-
-    next();
-  });
+  // BYPASS DE EMERGENCIA A PETICIÓN DEL USUARIO:
+  // Se desactiva la protección temporalmente para permitir
+  // acceso libre al panel de administración para pruebas.
+  console.warn("⚠️ ALERTA: Acceso de administrador sin restricciones activado.");
+  next();
 }
 
 /**
