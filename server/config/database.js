@@ -39,17 +39,22 @@ async function initDatabase() {
 
 async function createDefaultAdmin() {
   try {
+    const salt = bcrypt.genSaltSync(10);
+    const passwordHash = bcrypt.hashSync(config.admin.password, salt);
+
     const { rows } = await query('SELECT id FROM clients WHERE email = $1', [config.admin.email]);
     if (rows.length === 0) {
-      const salt = bcrypt.genSaltSync(10);
-      const passwordHash = bcrypt.hashSync(config.admin.password, salt);
-      
       await query(`
         INSERT INTO clients (name, email, password_hash, membership, is_active)
         VALUES ($1, $2, $3, 'admin', 1)
       `, [config.admin.name, config.admin.email, passwordHash]);
-      
       console.log(`✅ Usuario administrador creado: ${config.admin.email}`);
+    } else {
+      // Forzar la actualización de la contraseña para que siempre coincida con la configuración
+      await query(`
+        UPDATE clients SET password_hash = $1, membership = 'admin' WHERE email = $2
+      `, [passwordHash, config.admin.email]);
+      console.log(`✅ Contraseña del administrador sincronizada: ${config.admin.email}`);
     }
   } catch (err) {
     console.error('Error creando administrador por defecto:', err);
