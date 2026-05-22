@@ -15,8 +15,8 @@ const Upload = (() => {
   let currentTab = 'file';     // Tab activa: 'file' o 'text'
 
   // Tipos de archivo permitidos
-  const TEMPLATE_TYPES = ['.docx', '.doc', '.jpg', '.jpeg', '.png', '.gif', '.webp'];
-  const CONTENT_TYPES = ['.txt', '.json', '.md'];
+  const TEMPLATE_TYPES = ['.docx', '.doc', '.jpg', '.jpeg', '.png', '.gif', '.webp', '.pdf'];
+  const CONTENT_TYPES = ['.txt', '.json', '.md', '.docx', '.doc', '.pdf'];
   const MAX_FILE_SIZE_FREE = 10 * 1024 * 1024;      // 10 MB
   const MAX_FILE_SIZE_PREMIUM = 50 * 1024 * 1024;    // 50 MB
 

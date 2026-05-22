@@ -46,7 +46,8 @@ const config = {
       'text/plain',              // .txt
       'application/json',        // .json
       'application/vnd.openxmlformats-officedocument.wordprocessingml.document', // .docx
-      'application/msword'       // .doc
+      'application/msword',      // .doc
+      'application/pdf'          // .pdf
     ],
     allowedExtensions: ['.docx', '.doc', '.txt', '.json', '.jpg', '.jpeg', '.png', '.pdf']
   },

@@ -44,8 +44,8 @@ async function processDocument(templateFilePath, contentFilePath, outputFormat =
       // Plantilla es un documento Word - extraer estructura
       templateStructure = await analyzeDocxTemplate(templateFilePath);
     } else if (templateExt === '.pdf') {
-      // Plantilla PDF - usar estructura básica
-      templateStructure = getDefaultStructure('Documento basado en PDF');
+      // Plantilla PDF - extraer estructura usando pdf-parse
+      templateStructure = await analyzePdfTemplate(templateFilePath);
     } else {
       templateStructure = getDefaultStructure('Documento generado');
     }
@@ -60,6 +60,8 @@ async function processDocument(templateFilePath, contentFilePath, outputFormat =
       content = readJsonContent(contentFilePath);
     } else if (['.docx', '.doc'].includes(contentExt)) {
       content = await readDocxContent(contentFilePath);
+    } else if (contentExt === '.pdf') {
+      content = await readPdfContent(contentFilePath);
     } else {
       content = readTextContent(contentFilePath);
     }
@@ -786,13 +788,76 @@ async function generatePreview(filePath) {
   }
 }
 
+/**
+ * Analizar plantilla de PDF y crear estructura básica
+ * @param {string} filePath - Ruta al PDF
+ * @returns {Object} Estructura basada en análisis de PDF
+ */
+async function analyzePdfTemplate(filePath) {
+  try {
+    const pdfParse = require('pdf-parse');
+    const dataBuffer = fs.readFileSync(filePath);
+    const data = await pdfParse(dataBuffer);
+    
+    // Convert text to structure
+    const rawText = data.text;
+    const lines = rawText.split('\n').filter(l => l.trim().length > 0);
+    
+    return {
+      type: 'pdf',
+      title: 'Documento basado en PDF',
+      sections: [{ title: 'Contenido Original', content: lines }],
+      headings: [{ level: 1, text: 'Documento basado en PDF' }],
+      paragraphs: lines,
+      hasImages: false,
+      hasTables: false,
+      hasLists: false,
+      rawText: rawText
+    };
+  } catch (error) {
+    console.error('Error analizando plantilla PDF:', error.message);
+    return getDefaultStructure('Documento basado en PDF');
+  }
+}
+
+/**
+ * Leer contenido de archivo PDF
+ * @param {string} filePath - Ruta al archivo PDF
+ * @returns {Object} Contenido estructurado
+ */
+async function readPdfContent(filePath) {
+  try {
+    const pdfParse = require('pdf-parse');
+    const dataBuffer = fs.readFileSync(filePath);
+    const data = await pdfParse(dataBuffer);
+    
+    const text = data.text;
+    const lines = text.split('\n').filter(l => l.trim().length > 0);
+    
+    return {
+      type: 'pdf',
+      fullText: text,
+      sections: [{
+        title: '',
+        paragraphs: lines
+      }],
+      lineCount: lines.length
+    };
+  } catch (error) {
+    console.error('Error leyendo contenido PDF:', error.message);
+    return readTextContent(filePath); // fallback
+  }
+}
+
 module.exports = {
   processDocument,
   analyzeDocxTemplate,
   analyzeImageTemplate,
+  analyzePdfTemplate,
   generatePreview,
   readTextContent,
   readJsonContent,
   readDocxContent,
+  readPdfContent,
   buildDocument
 };

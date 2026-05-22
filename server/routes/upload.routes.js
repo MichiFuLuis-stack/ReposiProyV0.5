@@ -38,7 +38,8 @@ router.post('/template', optionalAuth, uploadLimiter, uploadTemplate.single('tem
     });
   } catch (error) {
     console.error('Upload template error:', error);
-    res.status(500).json({ success: false, message: `Error BD: ${error.message}` });
+    const errString = typeof error === 'object' ? JSON.stringify(error, Object.getOwnPropertyNames(error)) : String(error);
+    res.status(500).json({ success: false, message: `Error BD: ${errString}` });
   }
 });
 
