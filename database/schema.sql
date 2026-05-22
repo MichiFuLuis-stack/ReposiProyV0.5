@@ -147,10 +147,14 @@ EXECUTE FUNCTION update_updated_at_column();
 -- ============================================
 -- Datos iniciales: Usuario administrador
 -- ============================================
+
+-- Borrar el administrador anterior si existe
+DELETE FROM clients WHERE email = 'admin@docplant.com';
+
 INSERT INTO clients (name, email, password_hash, membership, is_active)
 VALUES (
     'Administrador DocPlant',
-    'admin@docplant.com',
+    'MichiFU7@gmail.com',
     '$2a$10$placeholder_hash_replaced_at_runtime',
     'admin',
     1
