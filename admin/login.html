@@ -113,15 +113,15 @@
     
     <div class="admin-badge">Zona Restringida - Administrador</div>
     
-    <form id="admin-login-form">
+    <form id="admin-login-form" autocomplete="off">
       <div class="form-group">
         <label for="email">Correo Administrativo</label>
-        <input type="email" id="email" class="form-control" placeholder="admin@docplant.com" required value="admin@docplant.com">
+        <input type="email" id="email" class="form-control" placeholder="tu@email.com" required autocomplete="off">
       </div>
       
       <div class="form-group">
         <label for="password">Contraseña</label>
-        <input type="password" id="password" class="form-control" placeholder="••••••••" required value="admin123">
+        <input type="password" id="password" class="form-control" placeholder="••••••••" required autocomplete="new-password">
       </div>
       
       <button type="submit" class="btn-login" id="login-btn">Acceder al Panel</button>

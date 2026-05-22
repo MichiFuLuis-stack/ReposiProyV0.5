@@ -28,7 +28,7 @@ document.addEventListener('DOMContentLoaded', () => {
     logoutBtn.addEventListener('click', (e) => {
       e.preventDefault();
       localStorage.removeItem('adminToken');
-      window.location.href = 'login.html';
+      window.location.href = '/'; // Redirigir a la página principal pública
     });
   }
 });
