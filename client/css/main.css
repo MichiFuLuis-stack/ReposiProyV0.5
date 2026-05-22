@@ -7,6 +7,14 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap');
 
 /* --- Variables del sistema de diseño --- */
+/* BYPASS DE EMERGENCIA: Ocultar link de Admin en todas partes */
+a[href*="/admin/index.html"], a[href*="admin/index.html"] {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
 :root {
   --color-primary: #10b981;
   --color-primary-light: #34d399;
