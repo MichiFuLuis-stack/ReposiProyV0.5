@@ -55,7 +55,7 @@ const authLimiter = rateLimit({
  * Middleware: Verificar límite de subidas diarias
  * Valida según membresía (free: 5, premium: 999, admin: ilimitado)
  */
-function uploadLimiter(req, res, next) {
+async function uploadLimiter(req, res, next) {
   try {
     // Los administradores no tienen límite
     if (req.user && req.user.membership === 'admin') {
@@ -70,7 +70,7 @@ function uploadLimiter(req, res, next) {
 
     // Verificar subidas del usuario autenticado
     if (req.user) {
-      const client = Client.findById(req.user.id);
+      const client = await Client.findById(req.user.id);
       if (!client) {
         return res.status(401).json(
           errorResponse('Usuario no encontrado.', 401)
@@ -78,7 +78,7 @@ function uploadLimiter(req, res, next) {
       }
 
       // Verificar si necesita reinicio de conteo diario
-      const lastReset = new Date(client.last_upload_reset);
+      const lastReset = client.last_upload_reset ? new Date(client.last_upload_reset) : new Date(0);
       const now = new Date();
       const isNewDay = lastReset.toDateString() !== now.toDateString();
 
@@ -86,7 +86,7 @@ function uploadLimiter(req, res, next) {
 
       if (isNewDay) {
         // Reiniciar conteo al comenzar un nuevo día
-        Client.resetDailyUploads();
+        await Client.resetDailyUploads();
         currentCount = 0;
       }
 
@@ -117,7 +117,7 @@ function uploadLimiter(req, res, next) {
       const sessionToken = req.sessionToken || (req.session && req.session.session_token);
 
       if (sessionToken) {
-        const session = Session.findByToken(sessionToken);
+        const session = await Session.findByToken(sessionToken);
         if (session && session.uploads_count >= dailyLimit) {
           return res.status(429).json(
             errorResponse(
