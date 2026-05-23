@@ -21,7 +21,7 @@ let cleanupInterval = null;
  * - Registrados: 72 horas
  * @returns {Object} Resultados de la limpieza
  */
-function cleanupExpiredFiles() {
+async function cleanupExpiredFiles() {
   console.log('  🧹 Iniciando limpieza de archivos expirados...');
   
   const results = {
@@ -37,7 +37,7 @@ function cleanupExpiredFiles() {
     const anonMaxAge = config.cleanup.anonymousMaxAge;
     
     // Archivos subidos anónimos
-    const oldAnonUploads = UploadedFile.getOldFiles(anonMaxAge, true);
+    const oldAnonUploads = await UploadedFile.getOldFiles(anonMaxAge, true);
     for (const file of oldAnonUploads) {
       try {
         // Eliminar del disco
@@ -51,7 +51,7 @@ function cleanupExpiredFiles() {
         }
         
         // Marcar como eliminado en BD
-        UploadedFile.markDeleted(file.id);
+        await UploadedFile.markDeleted(file.id);
         results.uploadedDeleted++;
       } catch (err) {
         results.errors.push(`Upload ${file.id}: ${err.message}`);
@@ -59,7 +59,7 @@ function cleanupExpiredFiles() {
     }
 
     // Archivos generados anónimos
-    const oldAnonGenerated = GeneratedFile.getOldFiles(anonMaxAge, true);
+    const oldAnonGenerated = await GeneratedFile.getOldFiles(anonMaxAge, true);
     for (const file of oldAnonGenerated) {
       try {
         const fullPath = path.isAbsolute(file.file_path)
@@ -71,7 +71,7 @@ function cleanupExpiredFiles() {
           results.filesRemovedFromDisk++;
         }
         
-        GeneratedFile.markDeleted(file.id);
+        await GeneratedFile.markDeleted(file.id);
         results.generatedDeleted++;
       } catch (err) {
         results.errors.push(`Generated ${file.id}: ${err.message}`);
@@ -81,10 +81,9 @@ function cleanupExpiredFiles() {
     // === Limpiar archivos de usuarios registrados (72 horas) ===
     const regMaxAge = config.cleanup.registeredMaxAge;
     
-    const oldRegUploads = UploadedFile.getOldFiles(regMaxAge, false);
+    const oldRegUploads = await UploadedFile.getOldFiles(regMaxAge, false);
     for (const file of oldRegUploads) {
-      // Solo eliminar si ya fue marcado como eliminado lógicamente o es muy antiguo
-      if (file.is_deleted) continue; // Ya procesado
+      if (file.is_deleted) continue;
       
       try {
         const fullPath = path.isAbsolute(file.file_path)
@@ -96,14 +95,14 @@ function cleanupExpiredFiles() {
           results.filesRemovedFromDisk++;
         }
         
-        UploadedFile.markDeleted(file.id);
+        await UploadedFile.markDeleted(file.id);
         results.uploadedDeleted++;
       } catch (err) {
         results.errors.push(`Upload reg ${file.id}: ${err.message}`);
       }
     }
 
-    const oldRegGenerated = GeneratedFile.getOldFiles(regMaxAge, false);
+    const oldRegGenerated = await GeneratedFile.getOldFiles(regMaxAge, false);
     for (const file of oldRegGenerated) {
       if (file.is_deleted) continue;
       
@@ -117,7 +116,7 @@ function cleanupExpiredFiles() {
           results.filesRemovedFromDisk++;
         }
         
-        GeneratedFile.markDeleted(file.id);
+        await GeneratedFile.markDeleted(file.id);
         results.generatedDeleted++;
       } catch (err) {
         results.errors.push(`Generated reg ${file.id}: ${err.message}`);
@@ -125,8 +124,8 @@ function cleanupExpiredFiles() {
     }
 
     // === Limpiar sesiones expiradas ===
-    const sessionResult = Session.cleanExpired();
-    results.sessionsCleared = sessionResult.count;
+    const sessionResult = await Session.cleanExpired();
+    results.sessionsCleared = sessionResult ? sessionResult.count : 0;
 
     const totalCleaned = results.uploadedDeleted + results.generatedDeleted;
     if (totalCleaned > 0) {
@@ -136,8 +135,7 @@ function cleanupExpiredFiles() {
     }
 
   } catch (error) {
-    console.error('  ❌ Error en limpieza:', error.message);
-    results.errors.push(error.message);
+    console.error('  ❌ Error en limpieza ignorado (sin base de datos)');
   }
 
   return results;

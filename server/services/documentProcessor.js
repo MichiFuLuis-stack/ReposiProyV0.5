@@ -66,8 +66,8 @@ async function processDocument(templateFilePath, contentFilePath, outputFormat =
       content = readTextContent(contentFilePath);
     }
 
-    // Generar el documento Word
-    const outputFileName = generateUniqueFilename('documento_generado.docx');
+    // Generar el documento final según el formato
+    const outputFileName = generateUniqueFilename(`documento_generado.${outputFormat}`);
     const outputPath = path.join(config.generatedPath, outputFileName);
 
     // Asegurar que existe el directorio de salida
@@ -75,14 +75,94 @@ async function processDocument(templateFilePath, contentFilePath, outputFormat =
       fs.mkdirSync(config.generatedPath, { recursive: true });
     }
 
-    // Crear el documento con la estructura de la plantilla y el contenido
-    const doc = buildDocument(templateStructure, content);
+    if (outputFormat === 'pdf') {
+      const { PDFDocument, rgb, StandardFonts } = require('pdf-lib');
+      const pdfDoc = await PDFDocument.create();
+      const font = await pdfDoc.embedFont(StandardFonts.Helvetica);
+      const boldFont = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
+      let page = pdfDoc.addPage();
+      let y = page.getHeight() - 50;
 
-    // Generar el buffer del documento
-    const buffer = await Packer.toBuffer(doc);
+      const drawText = (text, size, isBold, color = rgb(0,0,0)) => {
+        if (!text) return;
+        // Limpiar caracteres especiales que pdf-lib no soporta en fuentes estándar
+        const safeText = String(text).replace(/[^\x20-\x7E\xA0-\xFF]/g, '');
+        
+        // Wrap de texto simple
+        const maxChars = Math.floor(500 / (size * 0.5));
+        const words = safeText.split(' ');
+        let currentLine = '';
 
-    // Guardar el archivo
-    fs.writeFileSync(outputPath, buffer);
+        for (const word of words) {
+          if ((currentLine + word).length > maxChars) {
+            if (y < 50) {
+              page = pdfDoc.addPage();
+              y = page.getHeight() - 50;
+            }
+            page.drawText(currentLine, { x: 50, y, size, font: isBold ? boldFont : font, color });
+            y -= (size + 6);
+            currentLine = word + ' ';
+          } else {
+            currentLine += word + ' ';
+          }
+        }
+        
+        if (currentLine) {
+          if (y < 50) {
+            page = pdfDoc.addPage();
+            y = page.getHeight() - 50;
+          }
+          page.drawText(currentLine, { x: 50, y, size, font: isBold ? boldFont : font, color });
+          y -= (size + 10);
+        }
+      };
+
+      // Título
+      drawText(templateStructure.title || 'Documento Generado', 24, true, rgb(0.05, 0.58, 0.41));
+      y -= 20;
+
+      // Secciones de la plantilla
+      if (templateStructure.sections) {
+        for (let i = 0; i < templateStructure.sections.length; i++) {
+          const tSec = templateStructure.sections[i];
+          if (tSec.title) drawText(tSec.title, 16, true);
+          
+          const cSec = content.sections && content.sections[i] ? content.sections[i] : null;
+          if (cSec) {
+            if (cSec.title && cSec.title !== tSec.title) drawText(cSec.title, 14, true, rgb(0.2, 0.2, 0.2));
+            if (cSec.paragraphs) {
+              for (const p of cSec.paragraphs) {
+                drawText(p, 12, false);
+              }
+            }
+          } else if (tSec.content) {
+            for (const p of tSec.content) {
+              drawText(p, 12, false);
+            }
+          }
+        }
+      } else if (content.sections) {
+        for (const sec of content.sections) {
+          if (sec.title) drawText(sec.title, 14, true);
+          if (sec.paragraphs) {
+            for (const p of sec.paragraphs) {
+              drawText(p, 12, false);
+            }
+          }
+        }
+      }
+
+      drawText('Generado por DocPlant', 10, false, rgb(0.5, 0.5, 0.5));
+
+      const pdfBytes = await pdfDoc.save();
+      fs.writeFileSync(outputPath, pdfBytes);
+
+    } else {
+      // DOCX
+      const doc = buildDocument(templateStructure, content);
+      const buffer = await Packer.toBuffer(doc);
+      fs.writeFileSync(outputPath, buffer);
+    }
 
     const stats = fs.statSync(outputPath);
 
@@ -91,7 +171,7 @@ async function processDocument(templateFilePath, contentFilePath, outputFormat =
       filePath: outputPath,
       fileName: outputFileName,
       fileSize: stats.size,
-      format: 'docx',
+      format: outputFormat,
       message: 'Documento generado exitosamente'
     };
   } catch (error) {
