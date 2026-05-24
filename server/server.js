@@ -20,6 +20,7 @@ const adminRoutes = require('./routes/admin.routes');
 const userRoutes = require('./routes/user.routes');
 const paymentRoutes = require('./routes/payment.routes');
 const invoiceRoutes = require('./routes/invoice.routes');
+const copilotRoutes = require('./routes/copilot.routes');
 
 // Import services
 const { scheduleCleanup } = require('./services/fileCleanup');
@@ -47,6 +48,7 @@ app.use('/api/admin', adminRoutes);
 app.use('/api/user', userRoutes);
 app.use('/api/payment', paymentRoutes);
 app.use('/api/invoices', invoiceRoutes);
+app.use('/api/copilot', copilotRoutes);
 
 // Error handling middleware
 app.use((err, req, res, next) => {
