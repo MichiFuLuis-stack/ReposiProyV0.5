@@ -1,0 +1,314 @@
+/* ==========================================================================
+   FacturAI 🧾 - Hojas de Estilo Dedicadas para Facturación e Impresión
+   ========================================================================== */
+
+/* Layout en Paneles */
+.factura-layout {
+  display: grid;
+  grid-template-columns: 1.1fr 0.9fr;
+  gap: 30px;
+  align-items: start;
+  margin-bottom: 40px;
+}
+
+@media (max-width: 992px) {
+  .factura-layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Área de Visualización del Documento (Papel simulado) */
+.preview-document-container {
+  background: #141e19;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  min-height: 500px;
+  max-height: 700px;
+  overflow-y: auto;
+  box-shadow: inset 0 4px 12px rgba(0, 0, 0, 0.4);
+}
+
+/* --- Hoja Carta Simulado --- */
+.letter-view {
+  background: #ffffff;
+  color: #1a1a1a;
+  width: 100%;
+  max-width: 550px;
+  min-height: 700px;
+  padding: 30px 25px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+  border-radius: 4px;
+  font-family: 'Inter', Helvetica, Arial, sans-serif;
+  box-sizing: border-box;
+}
+
+/* Estilos internos de la hoja Carta para que tenga el texto en negro sobre fondo blanco */
+.letter-view h2,
+.letter-view h3,
+.letter-view div,
+.letter-view p,
+.letter-view span,
+.letter-view td,
+.letter-view th {
+  color: #111a16 !important;
+}
+.letter-view .preview-issuer-name {
+  color: #059669 !important; /* Esmeralda oscuro */
+}
+.letter-view .preview-invoice-num {
+  color: #ef4444 !important; /* Rojo */
+}
+
+.letter-view table.preview-table th {
+  background: #059669 !important;
+  color: #ffffff !important;
+  font-weight: 600;
+  padding: 8px;
+}
+.letter-view table.preview-table td {
+  border-bottom: 1px solid #e5e7eb;
+  padding: 8px;
+}
+
+/* --- Ticket Térmico POS Simulado --- */
+.pos-view {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+
+.pos-ticket {
+  background: #ffffff;
+  color: #000000;
+  width: 270px; /* Emulación del ancho físico de 80mm en pantalla */
+  padding: 20px 15px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+  font-family: 'Courier New', Courier, monospace; /* Típico de tickets */
+  position: relative;
+  box-sizing: border-box;
+  /* Bordes dentados estilo ticket */
+  border-top: 5px solid transparent;
+  border-bottom: 5px solid transparent;
+}
+
+.pos-ticket::before {
+  content: "";
+  position: absolute;
+  top: -5px;
+  left: 0;
+  width: 100%;
+  height: 5px;
+  background: linear-gradient(-45deg, #141e19 3px, transparent 0), linear-gradient(45deg, #141e19 3px, transparent 0);
+  background-size: 6px 10px;
+}
+
+.pos-ticket::after {
+  content: "";
+  position: absolute;
+  bottom: -5px;
+  left: 0;
+  width: 100%;
+  height: 5px;
+  background: linear-gradient(-45deg, #141e19 3px, transparent 0), linear-gradient(45deg, #141e19 3px, transparent 0);
+  background-size: 6px 10px;
+}
+
+.pos-ticket h2,
+.pos-ticket div,
+.pos-ticket span,
+.pos-ticket strong,
+.pos-ticket p {
+  color: #000000 !important;
+  font-family: 'Courier New', Courier, monospace !important;
+}
+
+.pos-item-row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 2px;
+}
+
+.pos-item-details {
+  font-size: 0.55rem;
+  color: #555555 !important;
+  margin-bottom: 5px;
+  padding-left: 8px;
+}
+
+/* Editor Scroll Area */
+.editor-scroll-area::-webkit-scrollbar {
+  width: 6px;
+}
+.editor-scroll-area::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.02);
+}
+.editor-scroll-area::-webkit-scrollbar-thumb {
+  background: var(--color-border-hover);
+  border-radius: 3px;
+}
+
+/* Fila de Items en el Editor */
+.editor-item-row {
+  display: grid;
+  grid-template-columns: 2.5fr 0.8fr 1.2fr 0.4fr;
+  gap: 10px;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid var(--color-border);
+  padding: 10px;
+  border-radius: var(--radius-md);
+  animation: fadeIn 0.3s ease-out;
+}
+
+@media (max-width: 576px) {
+  .editor-item-row {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+}
+
+.btn-delete-item {
+  color: var(--color-error);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-size: 1.1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: var(--transition);
+}
+
+.btn-delete-item:hover {
+  transform: scale(1.2);
+  color: #ff3333;
+}
+
+/* Estilos de Pestañas de Previsualización */
+.preview-tabs button.active {
+  background: var(--color-primary-dark);
+  border-color: var(--color-primary);
+  box-shadow: 0 0 10px rgba(16, 185, 129, 0.3);
+}
+
+/* Estilos para ocultar/mostrar elementos */
+.hidden {
+  display: none !important;
+}
+
+/* ==========================================================================
+   ESTILOS DE IMPRESIÓN (@media print)
+   Específicos para imprimir facturas y tickets en papel sin interfaz web.
+   ========================================================================== */
+@media print {
+  body {
+    background: #ffffff !important;
+    color: #000000 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  /* Ocultar absolutamente toda la UI de la web */
+  .navbar,
+  footer,
+  .editor-card,
+  .preview-tabs,
+  #upload-card,
+  #toast-container,
+  h1,
+  p {
+    display: none !important;
+  }
+
+  .container {
+    padding: 0 !important;
+    margin: 0 !important;
+    max-width: 100% !important;
+  }
+
+  .factura-layout {
+    display: block !important;
+    margin: 0 !important;
+  }
+
+  .factura-panel-left {
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  .preview-card {
+    background: #ffffff !important;
+    border: none !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+
+  .preview-document-container {
+    background: #ffffff !important;
+    box-shadow: none !important;
+    border: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    max-height: none !important;
+    overflow: visible !important;
+  }
+
+  /* Estilos específicos si imprimimos Carta */
+  body.print-letter-mode .letter-view {
+    box-shadow: none !important;
+    margin: 0 auto !important;
+    padding: 0 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+  
+  body.print-letter-mode .pos-view {
+    display: none !important;
+  }
+
+  /* Estilos específicos si imprimimos Ticket POS en impresora térmica */
+  body.print-pos-mode .pos-view {
+    display: flex !important;
+    justify-content: flex-start !important;
+    width: 100% !important;
+  }
+
+  body.print-pos-mode .letter-view {
+    display: none !important;
+  }
+
+  body.print-pos-mode .pos-ticket {
+    box-shadow: none !important;
+    width: 80mm !important; /* Ajustar al ancho real del rollo térmico */
+    padding: 2mm !important;
+    border: none !important;
+  }
+
+  body.print-pos-mode .pos-ticket::before,
+  body.print-pos-mode .pos-ticket::after {
+    display: none !important; /* Ocultar los dientes simulados en la impresión real */
+  }
+
+  /* Configuración del tamaño de página nativo en el cuadro del navegador */
+  body.print-letter-mode {
+    /* Página tamaño carta estándar */
+    @page {
+      size: letter;
+      margin: 15mm;
+    }
+  }
+
+  body.print-pos-mode {
+    /* Rollo de ticket térmico continuo */
+    @page {
+      size: 80mm auto;
+      margin: 0mm;
+    }
+  }
+}

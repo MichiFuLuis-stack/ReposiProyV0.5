@@ -372,6 +372,30 @@ const API = (() => {
   };
 
   /* =========================
+     MÓDULO DE FACTURACIÓN (FacturAI)
+     ========================= */
+  const invoice = {
+    /**
+     * Extraer datos de un archivo de factura (PDF o Imagen)
+     * @param {FormData} formData - Datos de formulario con el archivo
+     * @returns {Promise<Object>} Datos de factura estructurados
+     */
+    async extract(formData) {
+      return await request('POST', '/invoices/extract', formData);
+    },
+
+    /**
+     * Generar un PDF de factura en formato Carta o POS
+     * @param {Object} invoiceData - Objeto con datos de la factura
+     * @param {string} format - Formato de salida ('letter' o 'pos')
+     * @returns {Promise<Object>} Datos del archivo generado
+     */
+    async generate(invoiceData, format) {
+      return await request('POST', '/invoices/generate', { invoice: invoiceData, format });
+    }
+  };
+
+  /* =========================
      API PÚBLICA
      ========================= */
   return {
@@ -384,6 +408,7 @@ const API = (() => {
     upload,
     document,
     user,
-    payment
+    payment,
+    invoice
   };
 })();

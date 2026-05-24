@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FacturAI - Módulo de Facturación Inteligente</title>
+  <meta name="description" content="Procesa, edita y genera facturas tradicionales A4 o tickets POS con el Módulo de Facturación Inteligente.">
+  
+  <!-- Estilos CSS -->
+  <link rel="stylesheet" href="css/main.css?v=2">
+  <link rel="stylesheet" href="css/components.css?v=2">
+  <link rel="stylesheet" href="css/upload.css?v=2">
+  <link rel="stylesheet" href="css/responsive.css?v=2">
+  <link rel="stylesheet" href="css/facturacion.css?v=2">
+</head>
+<body style="display: flex; flex-direction: column; min-height: 100vh;" data-page="facturacion">
+
+  <!-- Navbar -->
+  <nav class="navbar">
+    <div class="container navbar-container" style="display: flex; justify-content: space-between; align-items: center;">
+      <!-- Logo -->
+      <a href="index.html" class="logo" style="display: flex; align-items: center; gap: 10px; text-decoration: none;">
+        <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+          <path d="M16 2C12 2 8 6 8 10c0 2 1 4 2 5l-2 13c0 1 1 2 2 2h12c1 0 2-1 2-2l-2-13c1-1 2-3 2-5 0-4-4-8-8-8z" fill="url(#leaf)"/>
+          <path d="M16 4c-1 0-2 1-2 2s1 2 2 2 2-1 2-2-1-2-2-2z" fill="#0a0f0d" opacity="0.3"/>
+          <path d="M13 16h6M13 19h6M13 22h4" stroke="#0a0f0d" stroke-width="1.5" stroke-linecap="round" opacity="0.5"/>
+          <defs><linearGradient id="leaf" x1="8" y1="2" x2="24" y2="30"><stop stop-color="#10b981"/><stop offset="1" stop-color="#06b6d4"/></linearGradient></defs>
+        </svg>
+        <span style="font-family: var(--font-heading); font-weight: 700; color: var(--color-text); font-size: 1.25rem;">FacturAI</span>
+      </a>
+      
+      <!-- Enlaces Centro -->
+      <div class="navbar-links" style="display: flex; gap: 20px;">
+        <a href="index.html" style="color: var(--color-text-secondary); text-decoration: none; font-weight: 500;">Volver al Hub</a>
+        <a href="facturacion.html" style="color: var(--color-text); text-decoration: none; font-weight: 500;">Facturador</a>
+        <a href="/pricing.html" style="color: var(--color-text-secondary); text-decoration: none; font-weight: 500;">Precios</a>
+      </div>
+
+      <!-- Acciones Derecha -->
+      <div class="navbar-actions" id="auth-buttons" style="display: flex; gap: 10px;">
+        <a href="login.html" class="btn btn-ghost" style="color: var(--color-text); text-decoration: none;">Iniciar Sesión</a>
+        <a href="register.html" class="btn btn-primary" style="text-decoration: none;">Registrarse</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Contenedor Principal de la App -->
+  <main class="container" style="flex: 1; padding: 100px 15px 40px;">
+    
+    <div style="text-align: center; margin-bottom: 30px;">
+      <h1 class="text-gradient" style="font-size: 3rem; font-family: var(--font-heading); background: var(--gradient-primary); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 10px;">
+        Facturador Inteligente
+      </h1>
+      <p style="color: var(--color-text-secondary); max-width: 600px; margin: 0 auto;">
+        Sube un PDF o ticket de compra. La IA extraerá los datos para que puedas editarlos e imprimirlos al instante en formato tradicional o ticket térmico.
+      </p>
+    </div>
+
+    <!-- Layout en dos paneles -->
+    <div class="factura-layout">
+      
+      <!-- PANEL IZQUIERDO: Previsualizador -->
+      <div class="factura-panel-left">
+        
+
+        <!-- Previsualizador de Documento -->
+        <div class="card glass-card preview-card" style="padding: 25px;">
+          <div class="preview-tabs" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+            <h3 style="color: var(--color-text); font-family: var(--font-heading); margin: 0;">Previsualización en Vivo</h3>
+            <div style="display: flex; gap: 8px;">
+              <button class="btn btn-sm btn-secondary active" id="btn-preview-letter">Formato Carta</button>
+              <button class="btn btn-sm btn-ghost" id="btn-preview-pos">Formato Ticket POS</button>
+            </div>
+          </div>
+
+          <!-- Marco de Visualización Dinámico del PDF / Ticket -->
+          <div class="preview-document-container" id="preview-container">
+            
+            <!-- VISTA PREVIA: CARTA (ESTÁNDAR) -->
+            <div id="view-letter" class="document-view letter-view">
+              <div class="letter-header" style="display: flex; justify-content: space-between; border-bottom: 2px solid var(--color-primary-dark); padding-bottom: 15px; margin-bottom: 20px;">
+                <div>
+                  <h2 class="preview-issuer-name" style="margin: 0; color: var(--color-primary-light); font-size: 1.4rem;">PROVEEDOR S.A.</h2>
+                  <p class="preview-issuer-address" style="margin: 3px 0; font-size: 0.75rem; color: var(--color-text-secondary);">Av. Principal 123, Santiago</p>
+                  <p class="preview-issuer-phone" style="margin: 3px 0; font-size: 0.75rem; color: var(--color-text-secondary);">Tel: +56 2 2123 4567</p>
+                  <p class="preview-issuer-email" style="margin: 3px 0; font-size: 0.75rem; color: var(--color-text-secondary);">contacto@empresa.cl</p>
+                </div>
+                <div style="border: 2px solid var(--color-primary-dark); padding: 10px; background: rgba(0,0,0,0.1); border-radius: var(--radius-sm); min-width: 160px; text-align: center;">
+                  <div style="font-weight: bold; font-size: 0.8rem;">RUT: <span class="preview-issuer-tax-id">76.123.456-K</span></div>
+                  <div style="color: var(--color-primary-light); font-size: 0.8rem; font-weight: bold; margin: 4px 0;">FACTURA ELECTRÓNICA</div>
+                  <div style="color: #ef4444; font-size: 1.1rem; font-weight: bold;">N° <span class="preview-invoice-num">100234</span></div>
+                </div>
+              </div>
+
+              <div class="letter-client-box" style="background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); padding: 12px; border-radius: var(--radius-md); margin-bottom: 20px; display: grid; grid-template-columns: 1fr 1fr; gap: 10px; font-size: 0.8rem;">
+                <div>
+                  <div style="color: var(--color-text-muted); font-weight: bold;">SEÑOR(ES):</div>
+                  <div class="preview-client-name" style="font-weight: bold; color: var(--color-text);">Cliente Final S.A.</div>
+                  <div style="margin-top: 5px; color: var(--color-text-muted); font-weight: bold;">DIRECCIÓN:</div>
+                  <div class="preview-client-address">Calle Nueva York 45, Santiago</div>
+                </div>
+                <div>
+                  <div style="color: var(--color-text-muted); font-weight: bold;">R.U.T. CLIENTE:</div>
+                  <div class="preview-client-tax-id" style="font-weight: bold;">99.555.666-8</div>
+                  <div style="margin-top: 5px; color: var(--color-text-muted); font-weight: bold;">FECHA EMISIÓN:</div>
+                  <div class="preview-date">2026-05-24</div>
+                  <div style="margin-top: 5px; color: var(--color-text-muted); font-weight: bold;">FECHA VENC.:</div>
+                  <div class="preview-due-date">2026-06-24</div>
+                </div>
+              </div>
+
+              <!-- Tabla de Items Carta -->
+              <table class="preview-table" style="width: 100%; border-collapse: collapse; font-size: 0.75rem; margin-bottom: 20px;">
+                <thead>
+                  <tr style="background: var(--color-primary-dark); color: #fff; text-align: left;">
+                    <th style="padding: 8px; border-radius: var(--radius-sm) 0 0 var(--radius-sm);">Cant.</th>
+                    <th style="padding: 8px;">Descripción del Producto/Servicio</th>
+                    <th style="padding: 8px; text-align: right;">P. Unitario</th>
+                    <th style="padding: 8px; text-align: right; border-radius: 0 var(--radius-sm) var(--radius-sm) 0;">Total</th>
+                  </tr>
+                </thead>
+                <tbody id="letter-items-body">
+                  <!-- Inyectado dinámicamente -->
+                </tbody>
+              </table>
+
+              <!-- Sección Inferior Totales Carta -->
+              <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-top: 20px; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 15px;">
+                <div style="background: rgba(255,255,255,0.01); border: 1px solid rgba(255,255,255,0.03); padding: 10px; border-radius: var(--radius-sm); font-size: 0.75rem; min-width: 180px;">
+                  <div style="font-weight: bold; color: var(--color-primary-light); margin-bottom: 5px;">INFORMACIÓN DE PAGO</div>
+                  <div>Método: <span class="preview-payment-method">Transferencia</span></div>
+                  <div>Moneda: <span class="preview-currency">CLP</span></div>
+                </div>
+                <div style="min-width: 200px; font-size: 0.8rem; text-align: right;">
+                  <div style="display: flex; justify-content: space-between; margin-bottom: 5px; color: var(--color-text-secondary);">
+                    <span>Monto Neto:</span>
+                    <span class="preview-subtotal">$0</span>
+                  </div>
+                  <div style="display: flex; justify-content: space-between; margin-bottom: 8px; color: var(--color-text-secondary);">
+                    <span>I.V.A. (<span class="preview-tax-rate">19</span>%):</span>
+                    <span class="preview-tax-amount">$0</span>
+                  </div>
+                  <div style="display: flex; justify-content: space-between; padding: 6px 0; border-top: 2px solid var(--color-primary); font-weight: bold; font-size: 0.95rem; color: var(--color-primary-light);">
+                    <span>TOTAL A PAGAR:</span>
+                    <span class="preview-total">$0</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- VISTA PREVIA: TICKET TÉRMICO POS (80mm) -->
+            <div id="view-pos" class="document-view pos-view hidden">
+              <div class="pos-ticket">
+                <div style="text-align: center; margin-bottom: 8px;">
+                  <h2 class="preview-issuer-name" style="margin: 0; font-size: 0.9rem; font-weight: bold;">PROVEEDOR S.A.</h2>
+                  <div style="font-size: 0.65rem;">RUT: <span class="preview-issuer-tax-id">76.123.456-K</span></div>
+                  <div class="preview-issuer-address" style="font-size: 0.6rem; color: #888;">Av. Principal 123, Santiago</div>
+                  <div class="preview-issuer-phone" style="font-size: 0.6rem; color: #888;">Tel: +56 2 2123 4567</div>
+                </div>
+
+                <div style="border-top: 1px dashed #666; border-bottom: 1px dashed #666; padding: 4px 0; margin-bottom: 8px; font-size: 0.65rem;">
+                  <div style="font-weight: bold; text-align: center;">FACTURA ELECTRÓNICA</div>
+                  <div style="display: flex; justify-content: space-between; margin-top: 2px;">
+                    <span>Nº: <strong class="preview-invoice-num">100234</strong></span>
+                    <span>Fecha: <span class="preview-date">2026-05-24</span></span>
+                  </div>
+                </div>
+
+                <div style="font-size: 0.6rem; margin-bottom: 8px; line-height: 1.3;">
+                  <div><strong>CLIENTE:</strong> <span class="preview-client-name">Cliente Final S.A.</span></div>
+                  <div><strong>RUT:</strong> <span class="preview-client-tax-id">99.555.666-8</span></div>
+                  <div><strong>DIREC:</strong> <span class="preview-client-address">Calle Nueva York 45, Santiago</span></div>
+                </div>
+
+                <div style="border-top: 1px dashed #666; padding-top: 4px; font-size: 0.6rem; font-weight: bold; display: flex; justify-content: space-between;">
+                  <span>CANT / DESCRIPCION</span>
+                  <span>TOTAL</span>
+                </div>
+                <div style="border-bottom: 1px dashed #666; padding-bottom: 4px; margin-bottom: 8px;"></div>
+
+                <!-- Lista de ítems POS -->
+                <div id="pos-items-list" style="font-size: 0.6rem; margin-bottom: 8px;">
+                  <!-- Inyectado dinámicamente -->
+                </div>
+
+                <div style="border-top: 1px dashed #666; padding-top: 6px; font-size: 0.65rem; line-height: 1.4;">
+                  <div style="display: flex; justify-content: space-between;">
+                    <span>SUBTOTAL:</span>
+                    <span class="preview-subtotal">$0</span>
+                  </div>
+                  <div style="display: flex; justify-content: space-between;">
+                    <span>IVA (<span class="preview-tax-rate">19</span>%):</span>
+                    <span class="preview-tax-amount">$0</span>
+                  </div>
+                  <div style="display: flex; justify-content: space-between; font-weight: bold; font-size: 0.75rem; border-top: 1px dashed #666; padding-top: 2px; margin-top: 2px;">
+                    <span>TOTAL:</span>
+                    <span class="preview-total">$0</span>
+                  </div>
+                </div>
+
+                <div style="border-top: 1px dashed #666; margin-top: 8px; padding-top: 8px; text-align: center; font-size: 0.6rem; color: #666;">
+                  <div>Metodo Pago: <span class="preview-payment-method">Transferencia</span></div>
+                  <div style="font-weight: bold; color: #333; margin: 4px 0 2px;">¡Gracias por su compra!</div>
+                  <div>Resolución Exenta SII Nº 80 de 2026</div>
+                  
+                  <!-- Simulación Código de Barras -->
+                  <div class="pos-barcode" style="margin: 10px auto 4px; width: 120px; height: 16px; background: repeating-linear-gradient(90deg, #333, #333 2px, #eee 2px, #eee 4px, #333 4px, #333 5px); border-radius: 1px;"></div>
+                  <div style="font-size: 0.5rem; letter-spacing: 2px;">10023476123456K995556668</div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+      <!-- PANEL DERECHO: Editor de Factura -->
+      <div class="factura-panel-right">
+        
+        <div class="card glass-card editor-card" style="padding: 25px; height: 100%; display: flex; flex-direction: column;">
+          
+          <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--color-border); padding-bottom: 15px; margin-bottom: 20px;">
+            <h3 style="color: var(--color-primary-light); font-family: var(--font-heading); margin: 0; font-size: 1.3rem;">Editor de Factura</h3>
+            <button class="btn btn-sm btn-ghost" id="btn-reset-invoice" style="font-size: 0.8rem; padding: 4px 8px;">🔄 Limpiar</button>
+          </div>
+
+          <!-- Contenido del Editor Formulario -->
+          <div class="editor-scroll-area" style="flex: 1; overflow-y: auto; padding-right: 5px; max-height: 650px; margin-bottom: 20px;">
+            
+            <!-- Sección 1: Documento -->
+            <div class="editor-section" style="margin-bottom: 25px;">
+              <h4 class="editor-section-title" style="color: var(--color-text); border-left: 3px solid var(--color-accent); padding-left: 10px; margin-bottom: 12px; font-weight: bold;">Detalles del Documento</h4>
+              <div class="form-row" style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 10px;">
+                <div class="form-group">
+                  <label class="form-label" style="font-size: 0.8rem; color: var(--color-text-secondary); display: block; margin-bottom: 5px;">Nº Factura</label>
+                  <input type="text" id="invoice-number" class="input" style="width: 100%; padding: 8px;" value="FAC-0001">
+                </div>
+                <div class="form-group">
+                  <label class="form-label" style="font-size: 0.8rem; color: var(--color-text-secondary); display: block; margin-bottom: 5px;">Moneda</label>
+                  <select id="invoice-currency" class="select" style="width: 100%; padding: 8px;">
+                    <option value="CLP">CLP ($)</option>
+                    <option value="USD">USD ($)</option>
+                    <option value="EUR">EUR (€)</option>
+                  </select>
+                </div>
+              </div>
+              <div class="form-row" style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 10px;">
+                <div class="form-group">
+                  <label class="form-label" style="font-size: 0.8rem; color: var(--color-text-secondary); display: block; margin-bottom: 5px;">Fecha Emisión</label>
+                  <input type="date" id="invoice-date" class="input" style="width: 100%; padding: 8px;">
+                </div>
+                <div class="form-group">
+                  <label class="form-label" style="font-size: 0.8rem; color: var(--color-text-secondary); display: block; margin-bottom: 5px;">Fecha Vencimiento</label>
+                  <input type="date" id="invoice-due-date" class="input" style="width: 100%; padding: 8px;">
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="form-label" style="font-size: 0.8rem; color: var(--color-text-secondary); display: block; margin-bottom: 5px;">Método de Pago</label>
+                <input type="text" id="invoice-payment-method" class="input" style="width: 100%; padding: 8px;" value="Transferencia Bancaria">
+              </div>
+            </div>
+
+            <!-- Sección 2: Emisor -->
+            <div class="editor-section" style="margin-bottom: 25px;">
+              <h4 class="editor-section-title" style="color: var(--color-text); border-left: 3px solid var(--color-primary-light); padding-left: 10px; margin-bottom: 12px; font-weight: bold;">Datos del Emisor (Proveedor)</h4>
+              <div class="form-row" style="display: grid; grid-template-columns: 2fr 1fr; gap: 15px; margin-bottom: 10px;">
+                <div class="form-group">
+                  <label class="form-label" style="font-size: 0.8rem; color: var(--color-text-secondary); display: block; margin-bottom: 5px;">Razón Social / Nombre</label>
+                  <input type="text" id="issuer-name" class="input" style="width: 100%; padding: 8px;" value="Proveedor de Servicios S.A.">
+                </div>
+                <div class="form-group">
+                  <label class="form-label" style="font-size: 0.8rem; color: var(--color-text-secondary); display: block; margin-bottom: 5px;">R.U.T. / ID</label>
+                  <input type="text" id="issuer-tax-id" class="input" style="width: 100%; padding: 8px;" value="76.123.456-K">
+                </div>
+              </div>
+              <div class="form-group" style="margin-bottom: 10px;">
+                <label class="form-label" style="font-size: 0.8rem; color: var(--color-text-secondary); display: block; margin-bottom: 5px;">Dirección</label>
+                <input type="text" id="issuer-address" class="input" style="width: 100%; padding: 8px;" value="Av. Andrés Bello 1234, Providencia, Santiago">
+              </div>
+              <div class="form-row" style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                <div class="form-group">
+                  <label class="form-label" style="font-size: 0.8rem; color: var(--color-text-secondary); display: block; margin-bottom: 5px;">Teléfono</label>
+                  <input type="text" id="issuer-phone" class="input" style="width: 100%; padding: 8px;" value="+56 2 2123 4567">
+                </div>
+                <div class="form-group">
+                  <label class="form-label" style="font-size: 0.8rem; color: var(--color-text-secondary); display: block; margin-bottom: 5px;">Email</label>
+                  <input type="email" id="issuer-email" class="input" style="width: 100%; padding: 8px;" value="contacto@proveedor.cl">
+                </div>
+              </div>
+            </div>
+
+            <!-- Sección 3: Cliente -->
+            <div class="editor-section" style="margin-bottom: 25px;">
+              <h4 class="editor-section-title" style="color: var(--color-text); border-left: 3px solid var(--color-accent); padding-left: 10px; margin-bottom: 12px; font-weight: bold;">Datos del Cliente (Receptor)</h4>
+              <div class="form-row" style="display: grid; grid-template-columns: 2fr 1fr; gap: 15px; margin-bottom: 10px;">
+                <div class="form-group">
+                  <label class="form-label" style="font-size: 0.8rem; color: var(--color-text-secondary); display: block; margin-bottom: 5px;">Nombre Completo / Empresa</label>
+                  <input type="text" id="client-name" class="input" style="width: 100%; padding: 8px;" value="Cliente Final S.A.">
+                </div>
+                <div class="form-group">
+                  <label class="form-label" style="font-size: 0.8rem; color: var(--color-text-secondary); display: block; margin-bottom: 5px;">R.U.T. / ID</label>
+                  <input type="text" id="client-tax-id" class="input" style="width: 100%; padding: 8px;" value="99.555.666-8">
+                </div>
+              </div>
+              <div class="form-group" style="margin-bottom: 10px;">
+                <label class="form-label" style="font-size: 0.8rem; color: var(--color-text-secondary); display: block; margin-bottom: 5px;">Dirección</label>
+                <input type="text" id="client-address" class="input" style="width: 100%; padding: 8px;" value="Calle Nueva York 45, Santiago Centro">
+              </div>
+              <div class="form-row" style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                <div class="form-group">
+                  <label class="form-label" style="font-size: 0.8rem; color: var(--color-text-secondary); display: block; margin-bottom: 5px;">Teléfono</label>
+                  <input type="text" id="client-phone" class="input" style="width: 100%; padding: 8px;" value="+56 2 2987 6543">
+                </div>
+                <div class="form-group">
+                  <label class="form-label" style="font-size: 0.8rem; color: var(--color-text-secondary); display: block; margin-bottom: 5px;">Email</label>
+                  <input type="email" id="client-email" class="input" style="width: 100%; padding: 8px;" value="facturas@clientefinal.cl">
+                </div>
+              </div>
+            </div>
+
+            <!-- Sección 4: Tabla de Productos -->
+            <div class="editor-section" style="margin-bottom: 25px;">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                <h4 class="editor-section-title" style="color: var(--color-text); border-left: 3px solid var(--color-primary-light); padding-left: 10px; margin: 0; font-weight: bold;">Ítems de Factura</h4>
+                <button type="button" class="btn btn-sm btn-primary" id="btn-add-item" style="padding: 4px 8px; font-size: 0.75rem;">+ Añadir Ítem</button>
+              </div>
+
+              <!-- Lista Dinámica de Ítems en el Editor -->
+              <div id="editor-items-list" style="display: flex; flex-direction: column; gap: 12px; margin-bottom: 15px;">
+                <!-- Filas añadidas con Javascript -->
+              </div>
+            </div>
+
+            <!-- Sección 5: Configuración Impuestos y Totales -->
+            <div class="editor-section" style="background: rgba(255,255,255,0.01); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: 15px;">
+              <h4 style="color: var(--color-primary-light); margin-bottom: 10px; font-size: 0.9rem; font-weight: bold;">Cálculo de Impuestos</h4>
+              <div class="form-row" style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; align-items: center;">
+                <div class="form-group">
+                  <label class="form-label" style="font-size: 0.75rem; color: var(--color-text-secondary); display: block; margin-bottom: 3px;">Tasa de Impuesto / IVA</label>
+                  <div style="display: flex; align-items: center; gap: 5px;">
+                    <input type="number" id="tax-rate-input" class="input" style="width: 70px; padding: 6px; text-align: center;" value="19" min="0" max="100">
+                    <span style="font-size: 0.9rem;">%</span>
+                  </div>
+                </div>
+                <div style="text-align: right; font-size: 0.85rem; line-height: 1.4;">
+                  <div>Subtotal Neto: <strong id="editor-subtotal-val">$0</strong></div>
+                  <div>IVA Calculado: <strong id="editor-tax-val">$0</strong></div>
+                  <div style="font-size: 1rem; color: var(--color-primary-light); margin-top: 4px; border-top: 1px solid rgba(255,255,255,0.08); padding-top: 4px;">Total General: <strong id="editor-total-val">$0</strong></div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Botones de Acción e Impresión -->
+          <div class="editor-actions" style="display: flex; flex-direction: column; gap: 10px; border-top: 1px solid var(--color-border); padding-top: 15px;">
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+              <button class="btn btn-primary" id="btn-generate-letter">
+                💾 Generar PDF Carta
+              </button>
+              <button class="btn btn-secondary" id="btn-generate-pos">
+                🧾 Generar Ticket POS
+              </button>
+            </div>
+            <button class="btn btn-primary" id="btn-print-direct" style="width: 100%; font-weight: bold; background: var(--gradient-accent); box-shadow: var(--shadow-glow); text-shadow: 0 1px 2px rgba(0,0,0,0.5);">
+              🖨️ Imprimir Factura / Ticket
+            </button>
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </main>
+
+  <!-- Footer -->
+  <footer style="padding: 30px 0; text-align: center; border-top: 1px solid var(--color-border); margin-top: auto;">
+    <div class="container">
+      <p style="color: var(--color-text-secondary);">© 2026 FacturAI. Todos los derechos reservados.</p>
+    </div>
+  </footer>
+
+  <!-- Contenedor de Toasts -->
+  <div id="toast-container" style="position: fixed; top: 20px; right: 20px; z-index: 9999;"></div>
+
+  <!-- Iframe Oculto para Impresión Directa -->
+  <iframe id="print-iframe" style="display: none;"></iframe>
+
+  <!-- Scripts -->
+  <script src="js/api.js?v=2"></script>
+  <script src="js/app.js?v=2"></script>
+  <script src="js/facturacion.js?v=2"></script>
+</body>
+</html>

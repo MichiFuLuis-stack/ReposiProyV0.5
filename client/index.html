@@ -3,16 +3,139 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>DocPlant - Transforma tus documentos con inteligencia</title>
-  <meta name="description" content="Sube tu plantilla, agrega tu contenido, y DocPlant genera el documento perfecto en segundos.">
+  <title>Ecosistema Inteligente - Panel Central</title>
+  <meta name="description" content="Accede a las herramientas inteligentes del ecosistema: DocPlant y FacturAI.">
   
-  <!-- Estilos CSS en el orden requerido -->
+  <!-- Estilos CSS -->
   <link rel="stylesheet" href="css/main.css?v=2">
   <link rel="stylesheet" href="css/components.css?v=2">
-  <link rel="stylesheet" href="css/upload.css?v=2">
   <link rel="stylesheet" href="css/responsive.css?v=2">
+  
+  <style>
+    /* Estilos específicos para el Portal Hub */
+    .hub-container {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 60px 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: calc(100vh - 180px);
+    }
+    .hub-header {
+      text-align: center;
+      margin-bottom: 50px;
+      animation: fadeIn 0.8s ease-out;
+    }
+    .hub-title {
+      font-size: 3.5rem;
+      font-family: var(--font-heading);
+      margin-bottom: 15px;
+      font-weight: 700;
+    }
+    .hub-subtitle {
+      font-size: 1.25rem;
+      color: var(--color-text-secondary);
+      max-width: 600px;
+      margin: 0 auto;
+    }
+    .hub-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 30px;
+      width: 100%;
+      animation: slideUp 0.8s ease-out;
+    }
+    .hub-card {
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+      padding: 40px 30px;
+      border-radius: var(--radius-xl);
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      backdrop-filter: var(--glass-blur);
+      transition: var(--transition);
+      cursor: pointer;
+    }
+    .hub-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(135deg, rgba(16, 185, 129, 0.05), rgba(6, 118, 212, 0.05));
+      opacity: 0;
+      transition: var(--transition);
+    }
+    .hub-card:hover {
+      transform: translateY(-8px);
+      border-color: var(--color-primary-light);
+      box-shadow: 0 15px 35px rgba(16, 185, 129, 0.15), var(--shadow-glow);
+    }
+    .hub-card:hover::before {
+      opacity: 1;
+    }
+    .hub-card-icon {
+      font-size: 48px;
+      margin-bottom: 25px;
+      display: inline-block;
+      transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+    .hub-card:hover .hub-card-icon {
+      transform: scale(1.15) rotate(5deg);
+    }
+    .hub-card-title {
+      font-size: 1.8rem;
+      font-family: var(--font-heading);
+      color: var(--color-text);
+      margin-bottom: 15px;
+      font-weight: 600;
+    }
+    .hub-card-desc {
+      color: var(--color-text-secondary);
+      font-size: 0.95rem;
+      line-height: 1.6;
+      margin-bottom: auto;
+    }
+    .hub-card-footer {
+      margin-top: 30px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: 600;
+      color: var(--color-primary-light);
+      transition: var(--transition);
+    }
+    .hub-card:hover .hub-card-footer {
+      color: var(--color-primary);
+      gap: 15px;
+    }
+    .badge-status {
+      position: absolute;
+      top: 15px;
+      right: 15px;
+      padding: 4px 10px;
+      border-radius: var(--radius-full);
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      background: rgba(16, 185, 129, 0.15);
+      color: var(--color-primary-light);
+      border: 1px solid rgba(16, 185, 129, 0.2);
+    }
+    .badge-status.new {
+      background: rgba(6, 182, 212, 0.15);
+      color: var(--color-accent);
+      border: 1px solid rgba(6, 182, 212, 0.2);
+    }
+  </style>
 </head>
-<body style="display: flex; flex-direction: column; min-height: 100vh;" data-page="home">
+<body style="display: flex; flex-direction: column; min-height: 100vh;" data-page="hub">
 
   <!-- Navbar -->
   <nav class="navbar">
@@ -25,14 +148,8 @@
           <path d="M13 16h6M13 19h6M13 22h4" stroke="#0a0f0d" stroke-width="1.5" stroke-linecap="round" opacity="0.5"/>
           <defs><linearGradient id="leaf" x1="8" y1="2" x2="24" y2="30"><stop stop-color="#10b981"/><stop offset="1" stop-color="#06b6d4"/></linearGradient></defs>
         </svg>
-        <span style="font-family: var(--font-heading); font-weight: 700; color: var(--color-text); font-size: 1.25rem;">DocPlant</span>
+        <span style="font-family: var(--font-heading); font-weight: 700; color: var(--color-text); font-size: 1.25rem;">Ecosistema</span>
       </a>
-      
-      <!-- Enlaces Centro -->
-      <div class="navbar-links" style="display: flex; gap: 20px;">
-        <a href="index.html" style="color: var(--color-text); text-decoration: none; font-weight: 500;">Inicio</a>
-        <a href="/pricing.html" style="color: var(--color-text-secondary); text-decoration: none; font-weight: 500;">Precios</a>
-      </div>
 
       <!-- Acciones Derecha -->
       <div class="navbar-actions" id="auth-buttons" style="display: flex; gap: 10px;">
@@ -42,120 +159,65 @@
     </div>
   </nav>
 
-  <!-- Hero Section -->
-  <section class="hero" style="padding: 120px 0 60px; text-align: center; position: relative;">
-    <div class="container">
-      <h1 class="text-gradient" style="font-size: 4rem; margin-bottom: 20px; font-family: var(--font-heading); background: var(--gradient-primary); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
-        Transforma tus documentos<br>con inteligencia
+  <!-- Hub Principal -->
+  <main class="hub-container">
+    <div class="hub-header">
+      <h1 class="hub-title text-gradient" style="background: var(--gradient-primary); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
+        Ecosistema Inteligente
       </h1>
-      <p style="font-size: 1.2rem; color: var(--color-text-secondary); max-width: 600px; margin: 0 auto 40px;">
-        Sube tu plantilla, agrega tu contenido, y DocPlant genera el documento perfecto en segundos.
+      <p class="hub-subtitle">
+        Accede a todas las herramientas y sistemas automatizados en un solo lugar.
       </p>
     </div>
-  </section>
 
-  <!-- Main Tool Section -->
-  <section class="tool-section" style="padding: 0 0 80px;">
-    <div class="container">
-      <div class="card glass-card" style="padding: 30px; border-radius: var(--radius-lg); background: var(--glass-bg); border: 1px solid var(--glass-border); backdrop-filter: var(--glass-blur);">
-        
-        <div class="upload-container" style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px;">
-          
-          <!-- Lado Izquierdo: Plantilla -->
-          <div class="upload-side">
-            <h3 style="margin-bottom: 15px; color: var(--color-text); font-family: var(--font-heading);">1. Archivo Modelo (Plantilla)</h3>
-            <div class="upload-zone" id="template-zone" style="border: 2px dashed var(--color-border); border-radius: var(--radius-md); padding: 50px 20px; text-align: center; cursor: pointer; transition: var(--transition);">
-              <div class="upload-zone-icon" style="font-size: 48px; margin-bottom: 15px;">📄</div>
-              <div class="upload-zone-text" style="color: var(--color-text-secondary);">
-                Arrastra tu plantilla aquí o <strong>haz clic para buscar</strong><br>
-                <small>(.docx, .doc, imágenes, .pdf)</small>
-              </div>
-              <input type="file" id="template-input" style="display: none;" accept=".docx,.doc,.jpg,.jpeg,.png,.pdf,application/pdf,image/*,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/msword">
-            </div>
-          </div>
-
-          <!-- Lado Derecho: Contenido -->
-          <div class="upload-side">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
-              <h3 style="color: var(--color-text); font-family: var(--font-heading); margin: 0;">2. Tu Contenido</h3>
-              <div class="upload-tabs" style="display: flex; gap: 10px;">
-                <button id="tab-content-file" class="btn btn-sm btn-secondary active">Archivo</button>
-                <button id="tab-content-text" class="btn btn-sm btn-ghost">Texto</button>
-              </div>
-            </div>
-            
-            <div class="upload-zone" id="content-zone" style="border: 2px dashed var(--color-border); border-radius: var(--radius-md); padding: 50px 20px; text-align: center; cursor: pointer; transition: var(--transition);">
-              <div class="upload-zone-icon" style="font-size: 48px; margin-bottom: 15px;">📝</div>
-              <div class="upload-zone-text" style="color: var(--color-text-secondary);">
-                Arrastra tu texto aquí o <strong>haz clic para buscar</strong><br>
-                <small>(.txt, .json, .docx, .pdf)</small>
-              </div>
-              <input type="file" id="content-input" style="display: none;" accept=".txt,.json,.docx,.doc,.pdf,application/pdf,text/plain,application/json,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/msword">
-            </div>
-            
-            <!-- Textarea (oculto por defecto) -->
-            <textarea id="content-textarea" class="input upload-text-input" placeholder="O escribe/pega tu texto directamente aquí..." style="display: none; width: 100%; height: 215px; resize: none; background: rgba(0,0,0,0.2); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: 15px; color: var(--color-text);"></textarea>
-            <div id="text-counter" style="text-align: right; color: var(--color-text-secondary); font-size: 0.8rem; margin-top: 5px; display: none;">0 caracteres</div>
-          </div>
-
-        </div>
-
-        <!-- Botón Generar -->
-        <div style="text-align: center; margin-top: 40px;">
-          <button id="generate-btn" class="btn btn-primary btn-lg generate-btn" style="padding: 15px 50px; font-size: 1.2rem; font-weight: 600; box-shadow: var(--shadow-glow);">
-            ✨ Generar Documento
-          </button>
-        </div>
-
-        <!-- Área de Resultados (Oculta por defecto) -->
-        <div id="result-area" class="result-area hidden" style="margin-top: 40px; border-top: 1px solid var(--color-border); padding-top: 30px; text-align: center;">
-          <h3 style="color: var(--color-success); margin-bottom: 20px;">¡Documento Generado con Éxito!</h3>
-          <div class="download-buttons" style="display: flex; justify-content: center; gap: 15px;">
-            <button id="download-docx" class="btn btn-primary">Descargar Word (.docx)</button>
-            <button id="download-pdf" class="btn btn-secondary">Descargar PDF</button>
-          </div>
-        </div>
-
-      </div>
-    </div>
-  </section>
-
-  <!-- Features Section -->
-  <section class="features" style="padding: 60px 0; background: rgba(0,0,0,0.2);">
-    <div class="container">
-      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px;">
-        <div class="card glass-card" style="padding: 30px; text-align: center; border-radius: var(--radius-md);">
-          <div style="font-size: 40px; margin-bottom: 20px;">⚡</div>
-          <h3 style="margin-bottom: 10px;">Ultrarrápido</h3>
-          <p style="color: var(--color-text-secondary);">Procesamiento en segundos. No pierdas tiempo formateando documentos manualmente.</p>
-        </div>
-        <div class="card glass-card" style="padding: 30px; text-align: center; border-radius: var(--radius-md);">
-          <div style="font-size: 40px; margin-bottom: 20px;">🔒</div>
-          <h3 style="margin-bottom: 10px;">Seguro y Privado</h3>
-          <p style="color: var(--color-text-secondary);">Tus archivos se procesan de forma segura y se eliminan automáticamente.</p>
-        </div>
-        <div class="card glass-card" style="padding: 30px; text-align: center; border-radius: var(--radius-md);">
-          <div style="font-size: 40px; margin-bottom: 20px;">🌱</div>
-          <h3 style="margin-bottom: 10px;">Flexible</h3>
-          <p style="color: var(--color-text-secondary);">Soporta múltiples formatos de entrada y salidas perfectas en Word o PDF.</p>
+    <div class="hub-grid">
+      <!-- Tarjeta 1: DocPlant -->
+      <div class="hub-card" onclick="window.location.href='docplant.html'">
+        <span class="badge-status">Activo</span>
+        <div class="hub-card-icon">🌱</div>
+        <h2 class="hub-card-title">DocPlant</h2>
+        <p class="hub-card-desc">
+          Plataforma avanzada de transformación de documentos. Carga tus plantillas Microsoft Word (.docx) y combínalas con contenido en texto plano o JSON estructurado para generar salidas perfectas.
+        </p>
+        <div class="hub-card-footer">
+          <span>Abrir DocPlant</span>
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="5" y1="12" x2="11" y2="6"></line>
+            <polyline points="12 12 12 6 6 6"></polyline>
+          </svg>
         </div>
       </div>
+
+      <!-- Tarjeta 2: FacturAI -->
+      <div class="hub-card" onclick="window.location.href='facturacion.html'">
+        <span class="badge-status new">Nuevo</span>
+        <div class="hub-card-icon">🧾</div>
+        <h2 class="hub-card-title">FacturAI</h2>
+        <p class="hub-card-desc">
+          Módulo inteligente de facturación. Procesa y extrae la información de PDFs o imágenes de compras, edítalos dinámicamente y genera facturas tradicionales A4 o tickets térmicos listos para imprimir en POS.
+        </p>
+        <div class="hub-card-footer">
+          <span>Abrir FacturAI</span>
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="5" y1="12" x2="11" y2="6"></line>
+            <polyline points="12 12 12 6 6 6"></polyline>
+          </svg>
+        </div>
+      </div>
+
+
     </div>
-  </section>
+  </main>
 
   <!-- Footer -->
-  <footer style="padding: 40px 0; text-align: center; border-top: 1px solid var(--color-border); margin-top: 60px;">
+  <footer style="padding: 40px 0; text-align: center; border-top: 1px solid var(--color-border); margin-top: auto;">
     <div class="container">
-      <p style="color: var(--color-text-secondary);">© 2026 DocPlant. Todos los derechos reservados.</p>
+      <p style="color: var(--color-text-secondary);">© 2026 Ecosistema Corporativo. Todos los derechos reservados.</p>
     </div>
   </footer>
-
-  <!-- Toast Container -->
-  <div id="toast-container" style="position: fixed; top: 20px; right: 20px; z-index: 9999;"></div>
 
   <!-- Scripts -->
   <script src="js/api.js?v=2"></script>
   <script src="js/app.js?v=2"></script>
-  <script src="js/upload.js?v=2"></script>
 </body>
 </html>
