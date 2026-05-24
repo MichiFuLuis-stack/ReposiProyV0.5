@@ -401,6 +401,40 @@ document.addEventListener('DOMContentLoaded', () => {
     }, 150);
   });
 
+  // Suscripción al evento personalizado 'copilotInvoiceFill' de Copilot para auto-rellenar
+  window.addEventListener('copilotInvoiceFill', (e) => {
+    const data = e.detail;
+    if (!data) return;
+
+    // Actualizar currentInvoice con los nuevos datos
+    if (data.invoiceNumber) currentInvoice.invoiceNumber = data.invoiceNumber;
+    if (data.currency) currentInvoice.currency = data.currency;
+    if (data.date) currentInvoice.date = data.date;
+    if (data.dueDate) currentInvoice.dueDate = data.dueDate;
+    if (data.paymentMethod) currentInvoice.paymentMethod = data.paymentMethod;
+
+    if (data.issuer) {
+      currentInvoice.issuer = { ...currentInvoice.issuer, ...data.issuer };
+    }
+    if (data.client) {
+      currentInvoice.client = { ...currentInvoice.client, ...data.client };
+    }
+    if (data.items && Array.isArray(data.items)) {
+      currentInvoice.items = data.items.map(item => ({
+        description: item.description || 'Producto',
+        quantity: parseInt(item.quantity, 10) || 1,
+        unitPrice: parseFloat(item.unitPrice) || 0,
+        total: (parseInt(item.quantity, 10) || 1) * (parseFloat(item.unitPrice) || 0)
+      }));
+    }
+
+    // Volver a renderizar e inicializar
+    initFormFields();
+    recalculateTotals();
+    renderEditorItems();
+    renderPreview();
+  });
+
   // Inicialización de la pantalla al cargar
   initFormFields();
   recalculateTotals();
